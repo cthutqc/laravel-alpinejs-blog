@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('articles/like', [\App\Http\Controllers\ArticleController::class, 'like'])
+    ->name('api.articles.like');
+
+Route::post('articles/view', [\App\Http\Controllers\ArticleController::class, 'view'])
+    ->name('api.articles.view');

@@ -22,21 +22,35 @@ class ArticleController extends Controller
 
     public function show(Article $article):View
     {
-        $article->increment('views');
-
         $article->load('article_tags');
 
         $article->load('comments');
+
+        if(!\Cache::has('likes_' . $article->id))
+            \Cache::forever('likes_' . $article->id, $article->likes);
+
+        if(!\Cache::has('views_' . $article->id))
+            \Cache::forever('views_' . $article->id, $article->views);
+
+        $article->update([
+            'likes' => \Cache::get('likes_' . $article->id),
+            'views' => \Cache::get('views_' . $article->id),
+        ]);
 
         return view('articles.show', compact('article'));
     }
 
     public function like(Request $request)
     {
-        Article::where('id', $request->only('article_id'))->increment('likes');
-
         return response()->json([
-            'success' => true,
+            'likes' => \Cache::increment('likes_' . $request->article_id)
+        ]);
+    }
+
+    public function view(Request $request)
+    {
+        return response()->json([
+            'views' => \Cache::increment('views_' . $request->article_id)
         ]);
     }
 }

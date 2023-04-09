@@ -22,9 +22,6 @@ Route::get('articles', [\App\Http\Controllers\ArticleController::class, 'index']
 Route::get('articles/{article:slug}', [\App\Http\Controllers\ArticleController::class, 'show'])
     ->name('articles.show');
 
-Route::post('articles/like', [\App\Http\Controllers\ArticleController::class, 'like'])
-    ->name('articles.like');
-
 Route::get('tags/{article_tag:slug}', \App\Http\Controllers\ArticleTagController::class)
     ->name('article_tags.show');
 

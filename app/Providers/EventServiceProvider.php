@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\CommentStored;
+use App\Listeners\StoreComment;
 use App\Models\Article;
 use App\Models\ArticleTag;
 use App\Observers\ArticleObserver;

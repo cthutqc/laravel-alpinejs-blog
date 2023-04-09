@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    use DispatchesJobs;
+
     public function store(Request $request)
     {
         $request->validate([
@@ -14,7 +16,13 @@ class CommentController extends Controller
             'body' => 'required',
         ]);
 
-        Comment::create($request->only('subject', 'body', 'article_id'));
+        $job = (new \App\Jobs\CommentStored([
+            'subject' => $request->subject,
+            'body' => $request->body,
+            'article_id' => $request->article_id,
+        ]));
+
+        $this->dispatch($job)->delay(now()->addSeconds(600));
 
         return response()->json(['success' => true]);
     }
